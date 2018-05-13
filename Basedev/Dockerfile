@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:latest
 LABEL maintainer Alex Yelluas <ayelluas@gmail.com>
 
 #############################################################################
@@ -63,12 +63,20 @@ RUN sh -c "/usr/sbin/useradd -m -U -G sudo -s /bin/zsh $user"
 # --build-arg password=<secret>
 RUN sh -c "/bin/echo $user:$password | /usr/sbin/chpasswd"
 
+ENV USER ${user:-alex}
+ENV HOME /home/${USER}
+
 USER ${user:-alex}
 WORKDIR /home/${user:-alex}
 
-RUN wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh \
-  -O - | zsh || true
+RUN mkdir -p ${HOME}/.config
+
+RUN git clone https://github.com/hiphamster/env.git ${HOME}/.config/env
+
+WORKDIR ${HOME}/.config/env
+RUN ./setup.sh
+WORKDIR ${HOME}
 
 # Command for the image
-CMD /bin/bash
+CMD /bin/zsh --login
 
