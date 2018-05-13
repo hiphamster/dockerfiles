@@ -39,6 +39,9 @@ RUN apt-get update && apt-get install -y \
       ctags \
       shellcheck \
       netcat \
+      net-tools \
+      traceroute \
+      iputils-ping \
       ranger \ 
       ack-grep \
       sqlite3 \
