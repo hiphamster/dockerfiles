@@ -68,18 +68,31 @@ RUN sh -c "/bin/echo $user:$password | /usr/sbin/chpasswd"
 
 ENV USER ${user:-alex}
 ENV HOME /home/${USER}
+ENV ENV_BASE ${HOME}/.config
 
 USER ${user:-alex}
 WORKDIR /home/${user:-alex}
 
-RUN mkdir -p ${HOME}/.config
+RUN mkdir -p ${ENV_BASE}
 
 RUN git clone https://github.com/hiphamster/env.git ${HOME}/.config/env
+RUN git clone https://github.com/hiphamster/nvim.git ${HOME}/.config/nvim
+RUN git clone https://github.com/hiphamster/tmuxconf.git ${HOME}/.config/tmuxconf
+RUN git clone https://github.com/hiphamster/dev-tools.git ${HOME}/.config/dev-tools
 
-WORKDIR ${HOME}/.config/env
+WORKDIR ${ENV_BASE}/env
 RUN ./setup.sh
-WORKDIR ${HOME}
 
+WORKDIR ${ENV_BASE}/nvim
+RUN ./setup.sh
+
+WORKDIR ${ENV_BASE}/tmuxconf
+RUN ./setup.sh
+
+WORKDIR ${ENV_BASE}/dev-tools
+RUN ./setup.sh
+
+WORKDIR ${HOME}
 # Command for the image
 CMD /bin/zsh --login
 
